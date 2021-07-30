@@ -49,7 +49,7 @@ public class TokenProvider implements InitializingBean {
     }
 
     /**
-     *
+     * Authentication 객체의 권한정보를 이용해서 토큰을 생성
      * @param authentication
      * @return
      */
@@ -59,7 +59,7 @@ public class TokenProvider implements InitializingBean {
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+        Date validity = new Date(now + this.tokenValidityInMilliseconds); // 토큰 expire time
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
@@ -69,6 +69,11 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
+    /**
+     * Token에 담겨있는 정보를 이용해 Authentication 객체를 리턴
+     * @param token
+     * @return
+     */
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
                 .parserBuilder()
@@ -87,6 +92,11 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
+    /**
+     * 토큰의 유효성 검증
+     * @param token
+     * @return
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
