@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hashAnyRole('USER','ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<User> getMyUserInfo(){
         return ResponseEntity.ok(userService.getMyUserWithAuthorities().get());
     }
